@@ -1,0 +1,50 @@
+\NeedsTeXFormat{LaTeX2e}[2023/02/03]
+\ProvidesPackage{texresources}
+  [2023/02/03 v0.01 LuaLaTeX package for resources managment]
+
+\RequirePackage{xparse}
+
+% Load Lua module for resources managment
+\directlua{dofile('resources.lua')}
+
+% Basic commands
+\ExplSyntaxOn
+\NewDocumentCommand{\ResourcesInitialize}{}{
+	\directlua{resources.initialize()}
+}
+
+\NewDocumentCommand{\ResourcesFinalize}{}{
+	\directlua{resources.finalize()}
+}
+
+\NewDocumentCommand{\ResourceFind}{mm}{
+	\directlua{resources.find(#1, #2)}
+}
+
+\NewDocumentCommand{\ResourceLoad}{omm}{
+	\IfBoolean{\ResourceFind{#2}{#3}}{
+		\directlua{resources.load(#2, #3)}
+		\IfValue{#1}{
+			\NewDocumentCommand{#1}{}{\directlua{resources.bind(#2, #3)}}
+		}
+	}{
+		\directlua{resources.logger.error('Resource #3 of type #2 not found')}
+		\PackageError{texresources}{Resource not found}{Maybe you meant one of the following resources: \directlua{resources.fuzzyfind(#2, #3)}}	
+	}
+}
+
+\NewDocumentCommand{\ResourceRegister}{mm}{
+	\IfBoolean{\ResourceFind{#2}{#3}}{
+		\directlua{resources.register(#1, #2)}
+	}{
+		\directlua{resources.logger.error('Resource #3 of type #2 not found')}
+		\PackageError{texresources}{Resource not found}{Maybe you meant one of the following resources: \directlua{resources.fuzzyfind(#2, #3)}}	
+	}
+}
+\ExplSyntaxOff
+
+% Basic resources
+%\input{bibliography-resources}
+%\input{graphics-resources}
+%\input{tables-resources}
+
