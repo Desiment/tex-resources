@@ -1,9 +1,9 @@
-local log = require('logger.lua')
+local log = require("logger.lua")
 
 local resources = []
 
-local _methods  = ['initialize', 'finalize', 'find', 'fuzzyfind', 'rload', 'register', 'bind']
-local _rtypes   = ['graphics', 'table', 'bibliography']
+local _methods  = ["initialize", "finalize", "find", "fuzzyfind", "rload", "register", "bind"]
+local _rtypes   = ["graphics", "table", "bibliography"]
 local _srcdir = "src/"
 
 local function configure(res)
